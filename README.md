@@ -1,9 +1,13 @@
 # vStore
+**NOTE:** This is a work-in-progress, some features may not work currently. Use at your own discretion.
+
 This is the result of what happens when I don't trust third-party modules.
 
 vStore is a datastore wrapper designed to interface well with Roblox's datastores. This is loosely based on loleris' [ProfileService](https://github.com/MadStudioRoblox/ProfileService) module.
 
-**NOTE:** This is a work-in-progress, some features may not work currently. Use at your own discretion.
+
+
+
 
 ### Object-Oriented
 Spawn new sessions and mutate data using vStore for each player/object like as if you are changing the properties of a part. 
