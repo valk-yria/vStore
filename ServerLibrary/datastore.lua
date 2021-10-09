@@ -1,7 +1,5 @@
 -- Services
 local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local UserInputService = game:GetService("UserInputService")
 local DatastoreService = game:GetService("DataStoreService")
 
 -- Variables
@@ -24,7 +22,7 @@ RETURNS:
 * This function also allows you to specify the format and locale for your timestamps.
 * For more info, read here: https://developer.roblox.com/en-us/articles/datetime-format-strings
 Returns a table of info of datastores opened in your game. Also exposes the parameters to ListDataStoresAsync(). ]] 
-function datastore.GetDatastoresInfo(prefix, pages, format, locale)
+function datastore.GetDatastoresInfo(prefix: string, pages: number, format: string, locale: string)
 	local datastores = {}
 	
 	local success, result = pcall(function()
