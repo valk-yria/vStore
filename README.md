@@ -1,10 +1,7 @@
 # vStore
 **NOTE:** This is a work-in-progress, some features may not work currently. Use at your own discretion.
 
-This is the result of what happens when I don't trust third-party modules.
-
-vStore is a datastore wrapper designed to interface well with Roblox's datastores. This is loosely based on loleris' [ProfileService](https://github.com/MadStudioRoblox/ProfileService) module.
-
+The result of what happens when you don't trust third-party modules, vStore is a datastore wrapper designed to interface well with Roblox's datastores. This is loosely based on loleris' [ProfileService](https://github.com/MadStudioRoblox/ProfileService) module.
 
 --------
 
@@ -17,9 +14,11 @@ vStore is a datastore wrapper designed to interface well with Roblox's datastore
 > Equipped with features such as caching, datastore 2.0, and more importantly session locking, vStore ensures your games remain most up-to-date with the datastores.
 
 ### **Easy to learn**
-> vStore is heavily encapsulated and does the heavy lifting behind the scenes for you, so you only need to worry about the important things - getting datastore work done quickly and easily.
+> vStore is heavily encapsulated and does the heavy lifting behind the scenes for you, so you only need to worry about the important things - getting datastore work done quickly and cleanly.
+> 
+> The syntax is also designed to resemble and use syntax you're most probably familiar with, so you can get to work easily.
 
-### **Versatile**
+### **Versatile and Flexible**
 > Why use vStore for just player data? Use it on just about anything, be it parts, objects, etc.
 
 ### **Customizable**
