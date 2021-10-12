@@ -14,6 +14,22 @@ The result of what happens when I don't trust third-party modules and choose to 
 > 
 > Manage and view data in a way that's clean, efficient and readable, using the syntax you're most familiar with.
 
+```lua
+local Session = require("Session")
+
+local key = 1
+local newSession = Session.new("DatastoreName", key)
+
+local results = newSession:GetFromStoreAsync()
+results.TestKey1 = "test"
+results.TestKey2 = "reeeee"
+results.TestKey3 = "this module is cool!"
+print(results)
+
+results:SetToStoreAsync()
+results:Kill()
+```
+
 ### **Feature-Ready**
 > Equipped with features such as:
 > - caching
