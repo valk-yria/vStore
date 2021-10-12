@@ -27,7 +27,7 @@ results.TestKey3 = "this module is cool!"
 print(results)
 
 results:SetToStoreAsync()
-results:Kill()
+results:KillAsync()
 ```
 
 ### **Feature-Ready**
