@@ -5,6 +5,8 @@
 
 The result of what happens when I don't trust third-party modules and choose to write one myself, vStore is an object-oriented datastore wrapper designed to interface well with Roblox's datastores. This is loosely based on loleris' [ProfileService](https://github.com/MadStudioRoblox/ProfileService) module.
 
+This is also equipped with the `datastore` library for easier method calls from Roblox's `DataStoreService`.
+
 
 
 
