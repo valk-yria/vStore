@@ -26,8 +26,8 @@ results.TestKey2 = "reeeee"
 results.TestKey3 = "this module is cool!"
 print(results)
 
-results:SetToStoreAsync()
-results:KillAsync()
+newSession:SetToStoreAsync()
+newSession:KillAsync()
 ```
 
 ### **Feature-Ready**
