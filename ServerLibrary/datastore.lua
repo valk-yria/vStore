@@ -38,12 +38,11 @@ function datastore.GetDatastoresInfo(prefix: string, pages: number, format: stri
 			local items = result:GetCurrentPage()
 			
 			for a, b in ipairs(items) do
-				local info = {}
-				info["DatastoreName"] = b.DataStoreName
-				info["CreatedTime"] = DateTime.fromUnixTimestampMillis(b.CreatedTime):FormatUniversalTime(f, l)
-				info["UpdatedTime"] = DateTime.fromUnixTimestampMillis(b.UpdatedTime):FormatUniversalTime(f, l)
-				
-				table.insert(datastores, info)
+				table.insert(datastores, {
+					DatastoreName = b.DataStoreName,
+					CreatedTime = DateTime.fromUnixTimestampMillis(b.CreatedTime):FormatUniversalTime(f, l),
+					UpdatedTime = DateTime.fromUnixTimestampMillis(b.UpdatedTime):FormatUniversalTime(f, l),
+				})
 			end
 			
 			if result.IsFinished then break end
@@ -66,12 +65,12 @@ Returns a table of info of datastore limits amount. ]]
 function datastore.GetDatastoreLimits()
 	local limits = 
 		{
-			["Get"] = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.GetAsync),
-			["GetSorted"] = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.GetSortedAsync),
-			["Set"] = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.SetIncrementAsync),
-			["SetSorted"] = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.SetIncrementSortedAsync),
-			["Update"] = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.UpdateAsync),
-			["UpdateOut"] = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.OnUpdate),
+			Get = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.GetAsync),
+			GetSorted = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.GetSortedAsync),
+			Set = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.SetIncrementAsync),
+			SetSorted = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.SetIncrementSortedAsync),
+			Update = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.UpdateAsync),
+			UpdateOut = DatastoreService:GetRequestBudgetForRequestType(Enum.DataStoreRequestType.OnUpdate),
 		}
 	
 	return limits

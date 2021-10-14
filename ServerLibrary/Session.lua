@@ -4,8 +4,7 @@ local StarterGui = game:GetService("StarterGui")
 local Datastore = game:GetService("DataStoreService")
 
 -- Properties
-local limit = 10
-
+local retries = 10
 local defaults = {}
 local cache = nil
 
@@ -15,12 +14,13 @@ Session.__index = Session
 
 -- Internals
 local function InternalGet(session)
-	local cap = limit
+	local cap = 0
 	local success, results, info
 
 	print(string.format("Attempt to load for %s...", session.Id))
 
-	while not success and cap < limit do 
+	while not success and cap < retries do 
+		cap += 1
 		success, results, info = pcall(function()
 			return session.Datastore.UpdateAsync(session.Datastore, session.Id, function(old)
 				return old
@@ -30,8 +30,8 @@ local function InternalGet(session)
 		if success then break end
 	end
 	
-	if cap >= limit then
-		warn(string.format("Datastore load ERROR for %s - %s", session.Id, results)) 
+	if cap >= retries then
+		warn(string.format("Datastore load ERROR for %s - hit the maximum amount of retries!", session.Id))
 		warn(string.format("A new default data is generated for %s. This will not save!", session.Id)) 
 		
 		session.Enabled = false
@@ -77,11 +77,11 @@ do
 	Session.SetCache = function(c)
 		cache = require(c)
 	end
-	Session.GetLimit = function()
-		return limit
+	Session.GetRetries = function()
+		return retries
 	end
-	Session.SetLimit = function(l)
-		limit = l
+	Session.SetRetries = function(l)
+		retries = l
 	end
 end
 
@@ -89,7 +89,7 @@ end
 function Session.new(datastoreName: string, id: number?)
 	if cache == nil then error("Cache is nil!") end
 	if defaults == nil then error("Defaults is nil!") end
-	if limit == nil or limit <= 0 then error("Limit is nil or is/under the value of 0!") end
+	if retries == nil or retries <= 0 then error("Retries is nil or is/under the value of 0!") end
 
 	local newSession = {}
 
