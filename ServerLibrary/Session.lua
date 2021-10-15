@@ -3,14 +3,15 @@ local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 local Datastore = game:GetService("DataStoreService")
 
--- Properties
-local retries = 10
-local defaults = {}
-local cache = nil
-
 -- Init
 Session = {}
 Session.__index = Session
+
+-- Properties
+local retries = 10
+local waitDuration = 5
+local defaults = {}
+local cache = nil
 
 -- Internals
 local function InternalGet(session)
@@ -27,11 +28,16 @@ local function InternalGet(session)
 			end)
 		end)
 		
-		if success then break end
+		if success == true then break end
 	end
 	
-	if cap >= retries then
-		warn(string.format("Datastore load ERROR for %s - hit the maximum amount of retries!", session.Id))
+	if cap >= retries or session.Lock ~= game.JobId then
+		local s = "Datastore load ERROR for %s - "
+		if cap >= retries then s ..= "game has hit the maximum amount of retries!"
+		elseif session.Lock ~= game.JobId then s ..= "a lock is already present!"
+		end
+		
+		warn(string.format(s, session.Id))
 		warn(string.format("A new default data is generated for %s. This will not save!", session.Id)) 
 		
 		session.Enabled = false
@@ -49,18 +55,28 @@ local function InternalGet(session)
 	end
 end
 local function InternalSet(session, dict)
+	local success, results, info
+	
 	print(string.format("Attempt to save for %s...", session.Id))
+	
+	while not success do 
+		success, results, info = pcall(function()
+			if session.Enabled == true then
+				return session.Datastore.UpdateAsync(session.Datastore, session.Id, function(old)
+					return dict
+				end)
+			else warn(string.format("Datastore save WARNING for %s - save is disabled.", session.Id)) 
+			end
+		end)
 
-	local success, results, info = pcall(function()
-		if session.Enabled == true then
-			return session.Datastore.UpdateAsync(session.Datastore, session.Id, function(old)
-				return dict
-			end)
-		else warn(string.format("Datastore save WARNING for %s - save is disabled.", session.Id)) end
-	end)
-
-	if not success then warn(string.format("Datastore save ERROR for %s - %s", session.Id, results))
-	else print(string.format("Datastore save SUCCESS for %s.", session.Id)) end
+		if success == true then
+			print(string.format("Datastore save SUCCESS for %s.", session.Id))
+			break 
+		else 
+			warn(string.format("Datastore save WARNING for %s - failed to save, retrying!", session.Id)) 
+			wait(waitDuration)
+		end
+	end
 end
 
 -- Properties
@@ -83,6 +99,12 @@ do
 	Session.SetRetries = function(l)
 		retries = l
 	end
+	Session.GetWait = function()
+		return waitDuration
+	end
+	Session.SetWait = function(w)
+		waitDuration = w
+	end
 end
 
 
@@ -90,12 +112,13 @@ function Session.new(datastoreName: string, id: number?)
 	if cache == nil then error("Cache is nil!") end
 	if defaults == nil then error("Defaults is nil!") end
 	if retries == nil or retries <= 0 then error("Retries is nil or is/under the value of 0!") end
+	if waitDuration == nil or waitDuration <= 0 then error("Wait duration is nil or is/under the value of 0!") end
 
 	local newSession = {}
 
 	newSession.Id = tostring(id)
 	newSession.Datastore = Datastore:GetDataStore(datastoreName, id, Instance.new("DataStoreOptions"):SetExperimentalFeatures({["v2"] = true}))
-	newSession.Lock = game.JobId .. "_" .. os.time()
+	newSession.Lock = game.JobId
 	newSession.Enabled = true
 
 	return setmetatable(newSession, Session)
@@ -140,7 +163,8 @@ do
 		local success, results = pcall(self.Datastore.RemoveAsync(self.Datastore, self.Id))
 
 		if not success then warn(string.format("Datastore wipe error for %s - %s", self.Id, results))
-		else print(string.format("Datastore wipe success for %s.", self.Id)) end
+		else print(string.format("Datastore wipe success for %s.", self.Id)) 
+		end
 	end
 
 	function Session:ClearCache()
